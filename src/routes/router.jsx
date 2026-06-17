@@ -6,25 +6,36 @@ import AuthLayout from '../components/layout/AuthLayout';
 import TodoPage from '../pages/TodoPage';
 import CreateTodoPage from '../pages/CreateTodoPage';
 import EditTodoPage from '../pages/EditTodoPage';
+import ProtectedRoute from './ProtectedRoute';
+import PublicOnlyRoute from './PublicOnlyRoute';
 
 export const router = createBrowserRouter([
   {
     element: <MainLayout />,
     children: [
-      { path: '/login', element: <LoginPage /> },
-      { path: '/register', element: <RegisterPage /> },
+      {
+        element: <PublicOnlyRoute />,
+        children: [
+          { path: '/login', element: <LoginPage /> },
+          { path: '/register', element: <RegisterPage /> },
+        ],
+      },
       {
         path: '/',
-        element: <AuthLayout />,
+        element: (
+          <ProtectedRoute>
+            <AuthLayout />
+          </ProtectedRoute>
+        ),
         children: [
           { index: true, element: <TodoPage /> },
           { path: '/todo/create', element: <CreateTodoPage /> },
           {
             path: '/todo/:id/edit',
-            element: <EditTodoPage />
-          }
-        ]
-      }
-    ]
-  }
+            element: <EditTodoPage />,
+          },
+        ],
+      },
+    ],
+  },
 ]);
